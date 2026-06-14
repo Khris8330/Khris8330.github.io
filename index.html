@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Christian Chiemerie — Cybersecurity Analyst</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:         #080b10;
+      --surface:    #0e1420;
+      --surface2:   #151d2e;
+      --border:     #1e2d45;
+      --text:       #e2e8f0;
+      --muted:      #64748b;
+      --accent:     #00d4ff;
+      --accent2:    #0ea5e9;
+      --green:      #22c55e;
+      --red:        #ef4444;
+      --yellow:     #f59e0b;
+      --mono:       'JetBrains Mono', monospace;
+      --sans:       'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Scan line atmosphere ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 212, 255, 0.012) 2px,
+        rgba(0, 212, 255, 0.012) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .9rem 2.5rem;
+      background: rgba(8, 11, 16, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: .08em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: .04em;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 6rem 2.5rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-content { max-width: 680px; }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .7rem 1.5rem;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .03em;
+      transition: all .2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #080b10;
+    }
+
+    .btn-primary:hover {
+      background: #33dcff;
+      text-decoration: none;
+      color: #080b10;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Terminal block — the signature element */
+    .terminal {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0, 212, 255, 0.06);
+    }
+
+    .terminal-bar {
+      background: var(--surface2);
+      padding: .6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red    { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green  { background: #22c55e; }
+
+    .terminal-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .terminal-body {
+      padding: 1.25rem 1.5rem;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .t-prompt { color: var(--accent); }
+    .t-cmd    { color: var(--text); }
+    .t-pass   { color: var(--green); }
+    .t-high   { color: var(--red); }
+    .t-med    { color: var(--yellow); }
+    .t-muted  { color: var(--muted); }
+    .t-score  { color: var(--accent); font-weight: 600; }
+
+    .cursor {
+      display: inline-block;
+      width: 7px;
+      height: 13px;
+      background: var(--accent);
+      vertical-align: middle;
+      animation: blink 1.1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* ── Section base ── */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 3rem;
+      letter-spacing: -.02em;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .about-text p strong {
+      color: var(--text);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .stat-number {
+      font-family: var(--mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: .25rem;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    /* ── Projects ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0, 212, 255, 0.08);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: .75rem;
+    }
+
+    .project-icon {
+      font-size: 1.4rem;
+      margin-bottom: .5rem;
+    }
+
+    .project-link {
+      font-size: 18px;
+      color: var(--muted);
+      transition: color .2s;
+      text-decoration: none;
+    }
+
+    .project-link:hover { color: var(--accent); }
+
+    .project-name {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: .4rem;
+    }
+
+    .project-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      letter-spacing: .04em;
+    }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .skill-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .skill-group-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
+    .skill-list li {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .skill-list li::before {
+      content: '▸';
+      color: var(--accent);
+      font-size: 10px;
+    }
+
+    /* ── Contact ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .contact-text p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color .2s;
+      text-decoration: none;
+    }
+
+    .contact-item:hover {
+      border-color: var(--accent);
+      text-decoration: none;
+    }
+
+    .contact-item-icon {
+      font-size: 1.2rem;
+      width: 36px;
+      text-align: center;
+    }
+
+    .contact-item-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .contact-item-value {
+      font-size: 13px;
+      color: var(--text);
+      font-family: var(--mono);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .terminal { display: none; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+      nav { padding: .9rem 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+      section { padding: 3.5rem 1.25rem; }
+      .hero { padding: 6rem 1.25rem 3rem; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 2rem; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor { animation: none; opacity: 1; }
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo">&gt; christian.chiemerie</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero" style="position:relative;z-index:1;">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Cybersecurity Analyst</div>
+      <h1>Building tools that<br /><span>expose what hides.</span></h1>
+      <p class="hero-desc">
+        I'm Christian Chiemerie — a cybersecurity analyst in training based in Nigeria.
+        I build Python security tools for threat detection, vulnerability assessment,
+        and security posture analysis. Every tool I write is something I'd actually use.
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">View my tools</a>
+        <a href="https://github.com/Khris8330" target="_blank" class="btn btn-outline">GitHub profile</a>
+      </div>
+    </div>
+
+    <!-- Terminal — signature element -->
+    <div class="terminal" aria-hidden="true">
+      <div class="terminal-bar">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+        <span class="terminal-title">security-posture-analyzer</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">$</span> <span class="t-cmd">python posture.py --target https://target.com</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-muted">[ TLS / Certificate ]</span></div>
+        <div><span class="t-pass">[PASS]</span> &nbsp;TLS 1.3 · cert valid 284 days</div>
+        <div><span class="t-pass">[PASS]</span> &nbsp;AES-256-GCM cipher suite</div>
+        <div>&nbsp;</div>
+        <div><span class="t-muted">[ HTTP Headers ]</span></div>
+        <div><span class="t-high">[HIGH]</span> &nbsp;Missing: Strict-Transport-Security</div>
+        <div><span class="t-med">[MED] &nbsp;</span> Missing: X-Frame-Options</div>
+        <div><span class="t-pass">[PASS]</span> &nbsp;Content-Security-Policy present</div>
+        <div>&nbsp;</div>
+        <div><span class="t-muted">[ DNS Security ]</span></div>
+        <div><span class="t-pass">[PASS]</span> &nbsp;SPF record valid</div>
+        <div><span class="t-high">[HIGH]</span> &nbsp;DMARC record not found</div>
+        <div>&nbsp;</div>
+        <div><span class="t-muted">─────────────────────────────</span></div>
+        <div>Score: <span class="t-score">52/100 · Grade: D</span></div>
+        <div><span class="t-muted">2 high · 3 medium · 5 low</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-prompt">$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- About -->
+  <section id="about">
+    <div class="section-label">// about</div>
+    <h2 class="section-title">Who I am</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm a self-taught cybersecurity analyst based in Nigeria, focused on building
+          practical security tools that solve real problems. My approach is hands-on —
+          I learn by building, and every project in my portfolio started as a real question
+          I wanted to answer.
+        </p>
+        <p>
+          My work spans <strong>threat detection</strong>, <strong>security posture analysis</strong>,
+          <strong>network anomaly detection</strong>, and <strong>Web3 security</strong>.
+          All tools are built in Python, designed to run cross-platform, and documented
+          for real-world use.
+        </p>
+        <p>
+          I'm actively targeting <strong>SOC Analyst</strong> and
+          <strong>Junior Security Engineer</strong> roles where I can contribute
+          immediately and keep growing.
+        </p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number">5</div>
+          <div class="stat-label">Security tools built</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Frameworks covered</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Python · open source</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Dependencies on paid APIs</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="section-label">// projects</div>
+    <h2 class="section-title">Security tools</h2>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-icon">🛡</div>
+        <div class="project-header">
+          <div class="project-name">security-posture-analyzer</div>
+          <a href="https://github.com/Khris8330/security-posture-analyzer" target="_blank" class="project-link" aria-label="View on GitHub">↗</a>
+        </div>
+        <p class="project-desc">
+          Passive security assessment tool. Analyzes TLS configuration, HTTP security headers,
+          and DNS records against OWASP, NIST, and CIS standards. Outputs a scored
+          verdict (A–F) with prioritised remediation recommendations and HTML report export.
+        </p>
+        <div class="project-tags">
+          <span class="tag">OWASP</span>
+          <span class="tag">NIST</span>
+          <span class="tag">TLS</span>
+          <span class="tag">DNS</span>
+          <span class="tag">CLI</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">📡</div>
+        <div class="project-header">
+          <div class="project-name">network-anomaly-detector</div>
+          <a href="https://github.com/Khris8330/network-anomaly-detector" target="_blank" class="project-link" aria-label="View on GitHub">↗</a>
+        </div>
+        <p class="project-desc">
+          Monitors network traffic patterns and flags suspicious behavior using statistical
+          analysis. Designed to surface anomalies that signature-based tools miss.
+        </p>
+        <div class="project-tags">
+          <span class="tag">Network Security</span>
+          <span class="tag">Anomaly Detection</span>
+          <span class="tag">Threat Detection</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">🔗</div>
+        <div class="project-header">
+          <div class="project-name">correlation-engine</div>
+          <a href="https://github.com/Khris8330/correlation-engine" target="_blank" class="project-link" aria-label="View on GitHub">↗</a>
+        </div>
+        <p class="project-desc">
+          Security event correlation engine that aggregates and correlates logs to
+          identify attack patterns and generate alerts. Built around SIEM concepts
+          for real-world SOC workflows.
+        </p>
+        <div class="project-tags">
+          <span class="tag">SIEM</span>
+          <span class="tag">Log Analysis</span>
+          <span class="tag">SOC</span>
+          <span class="tag">Alerting</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">⛓</div>
+        <div class="project-header">
+          <div class="project-name">web3-security-analyzer</div>
+          <a href="https://github.com/Khris8330/web3-security-analyzer" target="_blank" class="project-link" aria-label="View on GitHub">↗</a>
+        </div>
+        <p class="project-desc">
+          Security analysis tool for Web3 applications. Scans smart contracts and
+          blockchain interactions for common vulnerabilities and misconfigurations.
+        </p>
+        <div class="project-tags">
+          <span class="tag">Web3</span>
+          <span class="tag">Blockchain</span>
+          <span class="tag">Smart Contracts</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">🔍</div>
+        <div class="project-header">
+          <div class="project-name">Onchain-Threat-detector</div>
+          <a href="https://github.com/Khris8330/Onchain-Threat-detector" target="_blank" class="project-link" aria-label="View on GitHub">↗</a>
+        </div>
+        <p class="project-desc">
+          On-chain threat detection tool that monitors blockchain transactions for
+          malicious patterns, suspicious wallet behavior, and known threat signatures.
+        </p>
+        <div class="project-tags">
+          <span class="tag">Blockchain</span>
+          <span class="tag">Threat Intel</span>
+          <span class="tag">On-chain Analysis</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="section-label">// skills</div>
+    <h2 class="section-title">What I work with</h2>
+    <div class="skills-grid">
+
+      <div class="skill-group">
+        <div class="skill-group-title">Security domains</div>
+        <ul class="skill-list">
+          <li>TLS/SSL configuration analysis</li>
+          <li>HTTP security headers (OWASP)</li>
+          <li>DNS security — SPF, DMARC, DKIM</li>
+          <li>Network anomaly detection</li>
+          <li>Log correlation & SIEM concepts</li>
+          <li>Vulnerability assessment</li>
+        </ul>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Frameworks & standards</div>
+        <ul class="skill-list">
+          <li>OWASP Top 10</li>
+          <li>NIST SP 800-53</li>
+          <li>CIS Benchmarks</li>
+          <li>MITRE ATT&CK concepts</li>
+          <li>Incident triage & response</li>
+        </ul>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Tools & tech</div>
+        <ul class="skill-list">
+          <li>Python 3 — primary language</li>
+          <li>Git & GitHub</li>
+          <li>Linux (Kali) & Windows</li>
+          <li>Wireshark — network analysis</li>
+          <li>CLI tool development</li>
+          <li>HTML report generation</li>
+        </ul>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Currently learning</div>
+        <ul class="skill-list">
+          <li>CompTIA Security+ concepts</li>
+          <li>SOC workflows & playbooks</li>
+          <li>CVE research & NVD API</li>
+          <li>Web3 / blockchain security</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="section-label">// contact</div>
+    <h2 class="section-title">Get in touch</h2>
+    <div class="contact-grid">
+      <div class="contact-text">
+        <p>
+          I'm open to <strong>SOC Analyst</strong>, <strong>Junior Security Engineer</strong>,
+          and <strong>Security Analyst</strong> roles — full-time or freelance.
+        </p>
+        <p>
+          If you have a security problem that needs a tool built around it,
+          or you're looking for someone who learns fast and ships working code —
+          let's talk.
+        </p>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:christianc.security@gmail.com" class="contact-item">
+          <div class="contact-item-icon">✉</div>
+          <div>
+            <div class="contact-item-label">Email</div>
+            <div class="contact-item-value">christianc.security@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://www.linkedin.com/in/christian-chiemerie" target="_blank" class="contact-item">
+          <div class="contact-item-icon">in</div>
+          <div>
+            <div class="contact-item-label">LinkedIn</div>
+            <div class="contact-item-value">linkedin.com/in/christian-chiemerie</div>
+          </div>
+        </a>
+        <a href="https://github.com/Khris8330" target="_blank" class="contact-item">
+          <div class="contact-item-icon">⌥</div>
+          <div>
+            <div class="contact-item-label">GitHub</div>
+            <div class="contact-item-value">github.com/Khris8330</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Built by Christian Chiemerie · </span>
+    <span id="year"></span>
+    <span> · Hosted on GitHub Pages</span>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
